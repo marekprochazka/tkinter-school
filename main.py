@@ -30,8 +30,13 @@ class Application(tk.Tk):
         self.canv = tk.Canvas(self, background="#000000")
         self.canv.pack()
 
+        self.varColor = tk.StringVar()
+        self.entryColor = tk.Entry(textvariable = self.varColor, width=200)
+        self.entryColor.pack()
+
     def update_bg(self, *args):
         self.canv.configure(bg= "#%02x%02x%02x" % (self.scale_R.get(),self.scale_G.get(),self.scale_B.get()))
+        self.varColor.set(self.canv["background"])
 
     def quit(self, event=None):
         super().quit()
