@@ -15,6 +15,12 @@ class Application(tk.Tk):
         self.title(self.name)
         self.bind("<Escape>", self.quit)
 
+        self.var_R = tk.StringVar()
+        self.var_R.set(0)
+        self.var_R.trace("w", self.entry_update)
+        self.entry_R = tk.Entry(self, textvariable=self.var_R, width=200)
+        self.entry_R.pack()
+
         self.scale_R = tk.Scale(self, from_=0 , to=255, orient=tk.HORIZONTAL,
             background="red",length=self.length,width=self.width, command=self.update_bg)
         self.scale_R.pack()
@@ -36,12 +42,20 @@ class Application(tk.Tk):
 
     def update_bg(self, *args):
         self.canv.configure(bg= "#%02x%02x%02x" % (self.scale_R.get(),self.scale_G.get(),self.scale_B.get()))
+        self.var_R.set(self.scale_R.get())
         self.varColor.set(self.canv["background"])
+
+    def entry_update(self, *args,**kwargs):
+        r = self.var_R.get()
+        if r.isdigit():
+            self.scale_R.set(r)
+        else:
+            pass
 
     def quit(self, event=None):
         super().quit()
 
 
 app = Application()
-app.geometry("500x500")
+app.geometry("500x600")
 app.mainloop()
