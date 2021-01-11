@@ -14,6 +14,9 @@ class Application(tk.Tk):
         super().__init__(className=self.name)
         self.title(self.name)
         self.bind("<Escape>", self.quit)
+        self.entry_callback_command = (self.register(self.entry_callback))
+
+
         self.var_R = tk.StringVar()
         self.var_G = tk.StringVar()
         self.var_B = tk.StringVar()
@@ -29,7 +32,7 @@ class Application(tk.Tk):
         #TODO make component out of each entry/scale block
         self.var_R.set(0)
         self.var_R.trace("w",lambda *args, **kwargs : self.entry_update(col="R"))
-        self.entry_R = tk.Entry(self, textvariable=self.var_R, width=200)
+        self.entry_R = tk.Entry(self, validate='all', validatecommand=(self.entry_callback_command, '%P'),  textvariable=self.var_R, width=200)
         self.entry_R.pack()
 
         self.scale_R = tk.Scale(self, from_=0 , to=255, orient=tk.HORIZONTAL,
@@ -38,7 +41,7 @@ class Application(tk.Tk):
 
         self.var_G.set(0)
         self.var_G.trace("w",lambda *args, **kwargs : self.entry_update(col="G"))
-        self.entry_G = tk.Entry(self, textvariable=self.var_G, width=200)
+        self.entry_G = tk.Entry(self, validate='all', validatecommand=(self.entry_callback_command, '%P'), textvariable=self.var_G, width=200)
         self.entry_G.pack()
 
         self.scale_G = tk.Scale(self, from_=0 , to=255, orient=tk.HORIZONTAL,
@@ -47,7 +50,7 @@ class Application(tk.Tk):
 
         self.var_B.set(0)
         self.var_B.trace("w",lambda *args, **kwargs : self.entry_update(col="B"))
-        self.entry_B = tk.Entry(self, textvariable=self.var_B, width=200)
+        self.entry_B = tk.Entry(self, validate='all', validatecommand=(self.entry_callback_command, '%P'), textvariable=self.var_B, width=200)
         self.entry_B.pack()
 
         self.scale_B = tk.Scale(self, from_=0 , to=255, orient=tk.HORIZONTAL,
@@ -69,7 +72,16 @@ class Application(tk.Tk):
         self.var_G.set(self.scale_G.get())
         self.var_B.set(self.scale_B.get())
 
+
         self.varColor.set(self.canv["background"])
+
+    def entry_callback(self,value):
+        if value == "":
+            return True
+        if value.isdigit():
+            if int(value) <= 255:
+                return True
+        return False
 
     def entry_update(self, col, *args,**kwargs):
         if col == "R":
